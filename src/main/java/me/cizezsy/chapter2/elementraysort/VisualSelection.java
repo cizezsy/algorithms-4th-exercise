@@ -1,21 +1,20 @@
-package me.cizezsy.chapter2;
+package me.cizezsy.chapter2.elementraysort;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
+import me.cizezsy.chapter2.util.VisualUtils;
 
-public class Shell {
+public class VisualSelection {
 
     public static void sort(Comparable[] a) {
-        int h = 1;
-        while (h < a.length / 3) h = 3 * h + 1;
-
-        while (h >= 1) {
-            for (int i = h; i < a.length; i += h) {
-                for (int j = i; j >= h && less(a[j], a[j - h]); j -= h) {
-                    exch(a, j, j - h);
-                }
+        for (int i = 0; i < a.length; i++) {
+            int min = i;
+            for (int j = i + 1; j < a.length; j++) {
+                if (!less(a[min], a[j])) min = j;
+                show(a, min, j);
             }
-            h /= 3;
+            exch(a, min, i);
         }
     }
 
@@ -30,11 +29,13 @@ public class Shell {
     }
 
     private static void show(Comparable[] a) {
-        for (Comparable c : a) {
-            StdOut.print(c + " ");
-        }
-        StdOut.println();
+        VisualUtils.drawArray((Double[]) a);
     }
+
+    private static void show(Comparable[] a, int m, int n) {
+        VisualUtils.drawArray((Double[]) a, m, n);
+    }
+
 
     public static boolean isSorted(Comparable[] a) {
         for (int i = 1; i < a.length; i++) {
@@ -44,7 +45,10 @@ public class Shell {
     }
 
     public static void main(String[] args) {
-        String[] a = StdIn.readAllStrings();
+        Double[] a = new Double[250];
+        for (int i = 0; i < 250; i++) {
+            a[i] = StdRandom.uniform();
+        }
         sort(a);
         assert isSorted(a);
         show(a);

@@ -1,4 +1,4 @@
-package me.cizezsy.chapter2;
+package me.cizezsy.chapter2.mergesort;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
@@ -25,7 +25,7 @@ public class Merge {
     private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
         System.arraycopy(a, lo, aux, lo, hi + 1 - lo);
 
-        for (int i = lo, j = mid + 1, k = lo; i <= mid || j <= hi; k++) {
+        for (int i = lo, j = mid + 1, k = lo; k <= hi; k++) {
             if (i > mid)
                 a[k] = aux[j++];
             else if (j > hi)

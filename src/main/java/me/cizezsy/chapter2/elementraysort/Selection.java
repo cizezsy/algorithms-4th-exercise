@@ -1,16 +1,17 @@
-package me.cizezsy.chapter2;
+package me.cizezsy.chapter2.elementraysort;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
-import java.util.Arrays;
+public class Selection {
 
-public class Insertion {
     public static void sort(Comparable[] a) {
         for (int i = 0; i < a.length; i++) {
-            for (int j = i; j > 0 && less(a[j], a[j - 1]); j--) {
-                exch(a, j, j - 1);
+            int min = i;
+            for (int j = 0; j < a.length; j++) {
+                if (!less(a[min], a[j])) min = j;
             }
+            exch(a, min, i);
         }
     }
 
@@ -29,20 +30,6 @@ public class Insertion {
             StdOut.print(c + " ");
         }
         StdOut.println();
-    }
-
-    private static boolean check(Comparable[] a) {
-        Comparable[] origin = Arrays.copyOf(a, a.length);
-        sort(a);
-        Arrays.sort(origin);
-
-        if (a.length != origin.length)
-            return false;
-        for (int i = 0; i < a.length; i++) {
-            if (!origin[i].equals(a[i]))
-                return false;
-        }
-        return true;
     }
 
     public static boolean isSorted(Comparable[] a) {

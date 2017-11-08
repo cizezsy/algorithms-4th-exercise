@@ -1,20 +1,18 @@
-package me.cizezsy.chapter2;
+package me.cizezsy.chapter2.elementraysort;
 
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdRandom;
 import me.cizezsy.chapter2.util.VisualUtils;
 
-public class VisualSelection {
+public class VisualInsertion {
+
 
     public static void sort(Comparable[] a) {
         for (int i = 0; i < a.length; i++) {
-            int min = i;
-            for (int j = i + 1; j < a.length; j++) {
-                if (!less(a[min], a[j])) min = j;
-                show(a, min, j);
+            for (int j = i; j > 0 && less(a[j], a[j - 1]); j--) {
+                show(a, j, j - 1);
+                exch(a, j, j - 1);
             }
-            exch(a, min, i);
         }
     }
 
@@ -45,8 +43,8 @@ public class VisualSelection {
     }
 
     public static void main(String[] args) {
-        Double[] a = new Double[250];
-        for (int i = 0; i < 250; i++) {
+        Double[] a = new Double[200];
+        for (int i = 0; i < 200; i++) {
             a[i] = StdRandom.uniform();
         }
         sort(a);

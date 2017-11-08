@@ -3,6 +3,11 @@ package me.cizezsy.chapter2;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Stopwatch;
+import me.cizezsy.chapter2.elementraysort.*;
+import me.cizezsy.chapter2.mergesort.BottomUpMerge;
+import me.cizezsy.chapter2.mergesort.FasterMerge;
+import me.cizezsy.chapter2.mergesort.ImproveMerge;
+import me.cizezsy.chapter2.mergesort.Merge;
 
 import java.util.Scanner;
 
@@ -31,6 +36,10 @@ public class SortCompare {
             case "BottomUpMerge":
                 BottomUpMerge.sort(a);
                 break;
+            case "FasterMerge":
+                FasterMerge.sort(a);
+            case "ImproveMerge":
+                ImproveMerge.sort(a);
             default:
                 break;
         }

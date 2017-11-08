@@ -1,18 +1,21 @@
-package me.cizezsy.chapter2;
+package me.cizezsy.chapter2.elementraysort;
 
-import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdRandom;
-import me.cizezsy.chapter2.util.VisualUtils;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
-public class VisualInsertion {
-
+public class Shell {
 
     public static void sort(Comparable[] a) {
-        for (int i = 0; i < a.length; i++) {
-            for (int j = i; j > 0 && less(a[j], a[j - 1]); j--) {
-                show(a, j, j - 1);
-                exch(a, j, j - 1);
+        int h = 1;
+        while (h < a.length / 3) h = 3 * h + 1;
+
+        while (h >= 1) {
+            for (int i = h; i < a.length; i += h) {
+                for (int j = i; j >= h && less(a[j], a[j - h]); j -= h) {
+                    exch(a, j, j - h);
+                }
             }
+            h /= 3;
         }
     }
 
@@ -27,13 +30,11 @@ public class VisualInsertion {
     }
 
     private static void show(Comparable[] a) {
-        VisualUtils.drawArray((Double[]) a);
+        for (Comparable c : a) {
+            StdOut.print(c + " ");
+        }
+        StdOut.println();
     }
-
-    private static void show(Comparable[] a, int m, int n) {
-        VisualUtils.drawArray((Double[]) a, m, n);
-    }
-
 
     public static boolean isSorted(Comparable[] a) {
         for (int i = 1; i < a.length; i++) {
@@ -43,10 +44,7 @@ public class VisualInsertion {
     }
 
     public static void main(String[] args) {
-        Double[] a = new Double[200];
-        for (int i = 0; i < 200; i++) {
-            a[i] = StdRandom.uniform();
-        }
+        String[] a = StdIn.readAllStrings();
         sort(a);
         assert isSorted(a);
         show(a);
