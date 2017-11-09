@@ -4,10 +4,7 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Stopwatch;
 import me.cizezsy.chapter2.elementraysort.*;
-import me.cizezsy.chapter2.mergesort.BottomUpMerge;
-import me.cizezsy.chapter2.mergesort.FasterMerge;
-import me.cizezsy.chapter2.mergesort.ImproveMerge;
-import me.cizezsy.chapter2.mergesort.Merge;
+import me.cizezsy.chapter2.mergesort.*;
 
 import java.util.Scanner;
 
@@ -40,6 +37,8 @@ public class SortCompare {
                 FasterMerge.sort(a);
             case "ImproveMerge":
                 ImproveMerge.sort(a);
+            case "NaturalMerge":
+                NaturalMerge.sort(a);
             default:
                 break;
         }
