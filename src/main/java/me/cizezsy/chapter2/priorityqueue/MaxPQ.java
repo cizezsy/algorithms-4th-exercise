@@ -1,10 +1,13 @@
 package me.cizezsy.chapter2.priorityqueue;
 
 public class MaxPQ<Key extends Comparable<Key>> {
+    private static final int DEFAULT_SIZE = 20;
+
     private int N = 0;
     private Key[] pq;
 
     public MaxPQ() {
+        pq = (Key[]) new Comparable[DEFAULT_SIZE + 1];
     }
 
     public MaxPQ(int max) {
@@ -19,10 +22,17 @@ public class MaxPQ<Key extends Comparable<Key>> {
     public void insert(Key v) {
         pq[++N] = v;
         swim(N);
+        if (N == 1 || less(N, 0)) {
+            pq[0] = v;
+        }
     }
 
     public Key max() {
         return pq[1];
+    }
+
+    private Key min() {
+        return pq[0];
     }
 
     public Key delMax() {
@@ -49,13 +59,15 @@ public class MaxPQ<Key extends Comparable<Key>> {
     }
 
     private void sink(int k) {
+        Key origin = pq[k];
         while (k * 2 <= N) {
             int j = 2 * k;
             if (j < N && less(j, j + 1)) j++;
-            if (!less(k, j)) break;
-            exch(k, j);
+            if (origin.compareTo(pq[j]) >= 0) break;
+            pq[k] = pq[j];
             k = j;
         }
+        pq[k] = origin;
     }
 
     private boolean less(int i, int j) {
@@ -68,4 +80,17 @@ public class MaxPQ<Key extends Comparable<Key>> {
         pq[j] = t;
     }
 
+
+    public static void main(String[] args) {
+        MaxPQ<String> pq = new MaxPQ<>();
+        pq.insert("t");
+        pq.insert("d");
+        pq.insert("a");
+        pq.insert("z");
+        pq.insert("s");
+        pq.insert("y");
+
+        pq.delMax();
+        System.out.println(pq.min());
+    }
 }
