@@ -4,31 +4,21 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import me.cizezsy.chapter2.util.ArrayUtils;
 
-public class FastQuick3Way {
+public class SystemSort {
+
     public static void sort(Comparable[] a) {
         StdRandom.shuffle(a);
         sort(a, 0, a.length - 1);
     }
 
     private static void sort(Comparable[] a, int lo, int hi) {
-        if (hi - lo <= 10) {
-            insertSort(a, lo, hi);
+        if (hi <= lo)
             return;
-        }
 
-        int mid = lo + (hi - lo) / 2;
-        if (hi - lo > 40) {
-            int n = (hi - lo) / 8;
-            int m1 = mdeian3(a, lo, lo + n, lo + n + n);
-            int m2 = mdeian3(a, mid, mid - n, mid + n);
-            int m3 = mdeian3(a, hi, hi - n, hi - n - n);
-            mid = mdeian3(a, m1, m2, m3);
-        }
-        exch(a, lo, mid);
+
 
 
         int p = lo + 1, i = lo, q = hi, j = hi + 1;
-
         while (true) {
             do {
                 if (i++ == q) break;
@@ -70,34 +60,6 @@ public class FastQuick3Way {
 
     }
 
-    private static void insertSort(Comparable[] a, int lo, int hi) {
-        for (int i = lo; i < hi; i++) {
-            int j = i + 1;
-            Comparable origin = a[j];
-            for (; j > lo && less(origin, a[j - 1]); j--) {
-                a[j] = a[j - 1];
-            }
-            a[j] = origin;
-        }
-    }
-
-    private static int mdeian3(Comparable[] a, int i, int j, int k) {
-        if (less(a[i], a[j])) {
-            if (less(a[j], a[k]))
-                return j;
-            else if (less(a[i], a[k]))
-                return k;
-            else
-                return i;
-        } else {
-            if (less(a[i], a[k]))
-                return i;
-            else if (less(a[j], a[k]))
-                return k;
-            else
-                return j;
-        }
-    }
 
     private static boolean less(Comparable v, Comparable w) {
         return v.compareTo(w) < 0;
