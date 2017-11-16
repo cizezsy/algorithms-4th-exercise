@@ -4,34 +4,18 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class ST<Key, Value> {
 
-    protected Map<Key, Value> map;
+public abstract class ST<Key, Value> {
+
 
     public ST() {
-        map = new HashMap<>();
     }
 
 
-    public void put(Key key, Value value) {
-        if (key == null) {
-            throw new RuntimeException("can't put a null key");
-        }
+    public abstract void put(Key key, Value value);
 
-        if (value == null) {
-            map.remove(key);
-            return;
-        }
-
-        map.put(key, value);
-    }
-
-    public Value get(Key key) {
-        if (key == null) throw new RuntimeException("can't get from null key");
-        return map.get(key);
-    }
+    public abstract Value get(Key key);
 
     public void delete(Key key) {
         put(key, null);
@@ -45,25 +29,9 @@ public class ST<Key, Value> {
         return size() == 0;
     }
 
-    public int size() {
-        return map.size();
-    }
+    public abstract int size();
 
-    public Iterable<Key> keys() {
-        return map.keySet();
-    }
+    public abstract Iterable<Key> keys();
 
-    public static void main(String[] args) {
-        ST<String, Integer> st = new ST<>();
-
-        for (int i = 0; !StdIn.isEmpty(); i++) {
-            String key = StdIn.readString();
-            st.put(key, i);
-        }
-
-        for (String s : st.keys()) {
-            StdOut.println(s + " " + st.get(s));
-        }
-    }
 
 }

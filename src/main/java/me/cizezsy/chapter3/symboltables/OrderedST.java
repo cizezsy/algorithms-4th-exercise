@@ -8,28 +8,55 @@ import java.util.TreeMap;
 
 public class OrderedST<Key extends Comparable<Key>, Value> extends ST<Key, Value> {
 
+    private TreeMap<Key, Value> map;
+
     public OrderedST() {
         map = new TreeMap<>();
     }
 
+    @Override
+    public void put(Key key, Value value) {
+        if (key == null) {
+            throw new RuntimeException("can't put a null key");
+        }
+
+        if (value == null) {
+            map.remove(key);
+            return;
+        }
+
+        map.put(key, value);
+    }
+
+    @Override
+    public Value get(Key key) {
+        if (key == null) throw new RuntimeException("can't get from null key");
+        return map.get(key);
+    }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
+
     public Key min() {
-        return ((TreeMap<Key, Value>) map).firstKey();
+        return map.firstKey();
     }
 
     public Key max() {
-        return ((TreeMap<Key, Value>) map).lastKey();
+        return map.lastKey();
     }
 
     public Key floor(Key key) {
-        return ((TreeMap<Key, Value>) map).floorKey(key);
+        return map.floorKey(key);
     }
 
     public Key ceiling(Key key) {
-        return ((TreeMap<Key, Value>) map).ceilingKey(key);
+        return map.ceilingKey(key);
     }
 
     public int rank(Key key) {
-        return ((TreeMap<Key, Value>) map).tailMap(key).size();
+        return map.tailMap(key).size();
     }
 
     public Key select(int k) {
@@ -54,7 +81,7 @@ public class OrderedST<Key extends Comparable<Key>, Value> extends ST<Key, Value
     }
 
     public Iterable<Key> keys(Key lo, Key hi) {
-        return ((TreeMap<Key, Value>) map).subMap(lo, hi).keySet();
+        return map.subMap(lo, hi).keySet();
     }
 
     @Override
