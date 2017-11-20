@@ -1,21 +1,11 @@
 package me.cizezsy.chapter3.symboltables;
 
+import java.util.Iterator;
+
 public class SquentialSearchST<Key, Value> extends ST<Key, Value> {
 
     private Node first;
     private int size;
-
-    public class Node {
-        Key key;
-        Value val;
-        Node next;
-
-        public Node(Key key, Value val, Node next) {
-            this.key = key;
-            this.val = val;
-            this.next = next;
-        }
-    }
 
     @Override
     public void put(Key key, Value value) {
@@ -70,6 +60,44 @@ public class SquentialSearchST<Key, Value> extends ST<Key, Value> {
 
     @Override
     public Iterable<Key> keys() {
-        return null;
+        return first;
+    }
+
+    public class Node implements Iterable<Key> {
+        Key key;
+        Value val;
+        Node next;
+
+        public Node(Key key, Value val, Node next) {
+            this.key = key;
+            this.val = val;
+            this.next = next;
+        }
+
+        @Override
+        public Iterator<Key> iterator() {
+            return new NodeIterator(this);
+        }
+
+        private class NodeIterator implements Iterator<Key> {
+
+            private Node current;
+
+            public NodeIterator(Node current) {
+                this.current = current;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return current != null && current.next != null;
+            }
+
+            @Override
+            public Key next() {
+                Key k = current.key;
+                current = current.next;
+                return k;
+            }
+        }
     }
 }

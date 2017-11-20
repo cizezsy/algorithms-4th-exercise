@@ -11,6 +11,8 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> extends ST<Key, 
     private Value[] vals;
     private int N;
 
+    private int recent = 0;
+
 
     public BinarySearchST() {
         capacity = 20;
@@ -21,12 +23,25 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> extends ST<Key, 
 
     @Override
     public void put(Key key, Value value) {
-        int i = rank(key);
-
-        if (i < N && keys[i].compareTo(key) == 0) {
+        int i;
+        if (recent < N && keys[recent].equals(key)) {
+            i = recent;
             vals[i] = value;
             return;
+        } else if (N > 0 && keys[N - 1].compareTo(key) < 0) {
+            keys[N] = key;
+            vals[N] = value;
+            N++;
+            return;
+        } else {
+            i = rank(key);
+            if (i < N && keys[i].compareTo(key) == 0) {
+                vals[i] = value;
+                return;
+            }
         }
+
+
         for (int j = N++; j > i; j--) {
             keys[j] = keys[j - 1];
             vals[j] = vals[j - 1];
@@ -41,10 +56,13 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> extends ST<Key, 
     @Override
     public Value get(Key key) {
         if (isEmpty()) return null;
+        if (recent < N && keys[recent].equals(key)) {
+            return vals[recent];
+        }
         int i = rank(key);
-        if (i < N && keys[i].compareTo(key) == 0)
+        if (i < N && keys[i].compareTo(key) == 0) {
             return vals[i];
-        else
+        } else
             return null;
     }
 
@@ -73,7 +91,13 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> extends ST<Key, 
 
     @Override
     public void delete(Key key) {
-        int i = rank(key);
+        int i;
+        if (recent < N && keys[recent].equals(key)) {
+            i = recent;
+            recent = 0;
+        } else {
+            i = rank(key);
+        }
         if (i < N && keys[i].compareTo(key) == 0) {
             for (int j = i; j < N - 1; j++) {
                 keys[j] = keys[j + 1];
