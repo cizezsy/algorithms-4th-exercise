@@ -2,6 +2,9 @@ package me.cizezsy.chapter3.balancedsearchtree;
 
 import me.cizezsy.chapter3.binarysearchtrees.OrderedST;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedST<Key, Value> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
@@ -10,10 +13,12 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
 
     @Override
     public void put(Key key, Value value) {
-        root = put(root, key, value);
-        root.color = BLACK;
+        //root = put(root, key, value);
+        //root.color = BLACK;
+        putSingle(key, value);
     }
 
+    //3.2.25
     private Node put(Node x, Key key, Value value) {
         if (x == null) {
             x = new Node(key, value, 1, RED);
@@ -44,43 +49,35 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
         return x;
     }
 
-    public void putSingle(Key key, Value value) {
+    //3.2.26
+    private void putSingle(Key key, Value value) {
         if (root == null) {
             root = new Node(key, value, 1, BLACK);
             return;
         }
 
-        Node f = getNode(key);
-        if (f != null) {
-            f.value = value;
+        Node t = getNode(key);
+        if (t != null) {
+            t.value = value;
             return;
         }
 
-        Node n = root;
+        if (isRed(root.left) && isRed(root.right)) {
+            flipColors(root);
+        }
+        if (isRed(root.right)) {
+            root = rotateLeft(root);
+        }
+        if (isRed(root.left) && isRed(root.left.left)) {
+            root = rotateRight(root);
+        }
+        root.color = BLACK;
+
         Node parent = root;
+        Node n = parent;
         while (true) {
-            if (n == null) {
-                n = new Node(key, value, 1, RED);
-                if (parent.key.compareTo(key) > 0) {
-                    parent.left = n;
-                } else {
-                    parent.right = n;
-                }
-                break;
-            }
-
             parent = n;
-
-            if (isRed(parent.left) && isRed(parent.right)) {
-                flipColors(parent);
-            }
-            if (isRed(parent.right)) {
-                parent = rotateLeft(parent);
-            }
-            if (isRed(parent.left) && isRed(parent.left.left)) {
-                parent = rotateRight(parent);
-            }
-
+            parent.N = parent.N + 1;
             int cmp = parent.key.compareTo(key);
             if (cmp > 0) {
                 n = parent.left;
@@ -88,8 +85,69 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
                 n = parent.right;
             }
 
+            if (n == null) {
+                n = new Node(key, value, 1, RED);
+                if (cmp > 0) {
+                    parent.left = n;
+                } else {
+                    parent.right = n;
+                }
+                break;
+            }
+
+            if (isRed(n.left) && isRed(n.right)) {
+                flipColors(n);
+            }
+            if (isRed(n.right)) {
+                n = rotateLeft(n);
+            }
+            if (isRed(n.left) && isRed(n.left.left)) {
+                n = rotateRight(n);
+            }
+
+            if (cmp > 0) {
+                parent.left = n;
+            } else {
+                parent.right = n;
+            }
         }
 
+    }
+
+    //3.2.27
+    private Node putAllowRight(Node x, Key key, Value value) {
+        if (x == null) {
+            x = new Node(key, value, 1, RED);
+            return x;
+        }
+
+        if (isRed(x.left) && isRed(x.right)) {
+            flipColors(x);
+        }
+
+        int cmp = x.key.compareTo(key);
+        if (cmp == 0) {
+            x.value = value;
+        } else if (cmp > 0) {
+            x.left = put(x.left, key, value);
+        } else {
+            x.right = put(x.right, key, value);
+        }
+
+        if (isRed(x.left) && isRed(x.left.right)) {
+            x.left = rotateLeft(x.left);
+            x = rotateRight(x);
+        } else if (isRed(x.left) && isRed(x.left.left)) {
+            x = rotateRight(x);
+        } else if (isRed(x.right) && isRed(x.right.right)) {
+            x = rotateLeft(x);
+        } else if (isRed(x.right) && isRed(x.right.left)) {
+            x.right = rotateRight(x.right);
+            x = rotateLeft(x);
+        }
+
+        x.N = size(x.left) + size(x.right) + 1;
+        return x;
     }
 
 
@@ -156,12 +214,24 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
 
     @Override
     public Key min() {
-        return null;
+        return min(root).key;
+    }
+
+    private Node min(Node node) {
+        if (node.left == null)
+            return node;
+        return min(node.left);
     }
 
     @Override
     public Key max() {
-        return null;
+        return max(root).key;
+    }
+
+    private Node max(Node node) {
+        if (node.right == null)
+            return node;
+        return max(node.right);
     }
 
     @Override
@@ -185,13 +255,31 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
     }
 
     @Override
-    public Iterable<Key> keys(Key lo, Key hi) {
-        return null;
+    public Iterable<Key> keys() {
+        return keys(min(), max());
     }
 
     @Override
+    public Iterable<Key> keys(Key lo, Key hi) {
+        Queue<Key> queue = new LinkedList<>();
+        keys(root, queue, lo, hi);
+        return queue;
+    }
+
+    private void keys(Node node, Queue<Key> queue, Key lo, Key hi) {
+        if (node == null)
+            return;
+        int cmplo = lo.compareTo(node.key);
+        int cmphi = hi.compareTo(node.key);
+        if (cmplo < 0) keys(node.left, queue, lo, hi);
+        if (cmplo <= 0 && cmphi >= 0) queue.add(node.key);
+        if (cmphi > 0) keys(node.right, queue, lo, hi);
+    }
+
+
+    @Override
     public int size() {
-        return 0;
+        return size(root);
     }
 
     private class Node {
@@ -207,5 +295,16 @@ public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedS
             N = n;
             this.color = color;
         }
+    }
+
+
+    public static void main(String[] args) {
+        TopDown234Tree<String, Integer> st = new TopDown234Tree<>();
+        st.putSingle("6", 1);
+        st.putSingle("4", 1);
+        st.putSingle("1", 1);
+        st.putSingle("3", 1);
+        st.putSingle("7", 1);
+        st.putSingle("2", 1);
     }
 }
