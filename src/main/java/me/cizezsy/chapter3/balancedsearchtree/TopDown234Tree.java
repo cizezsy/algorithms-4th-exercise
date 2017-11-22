@@ -2,7 +2,7 @@ package me.cizezsy.chapter3.balancedsearchtree;
 
 import me.cizezsy.chapter3.binarysearchtrees.OrderedST;
 
-public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<Key, Value> {
+public class TopDown234Tree<Key extends Comparable<Key>, Value> extends OrderedST<Key, Value> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
@@ -16,8 +16,12 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
 
     private Node put(Node x, Key key, Value value) {
         if (x == null) {
-            x = new Node(key, value, 1, BLACK);
+            x = new Node(key, value, 1, RED);
             return x;
+        }
+
+        if (isRed(x.left) && isRed(x.right)) {
+            flipColors(x);
         }
 
         int cmp = x.key.compareTo(key);
@@ -35,16 +39,79 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
         if (isRed(x.left) && isRed(x.left.left)) {
             x = rotateRight(x);
         }
-        if (isRed(x.left) && isRed(x.right)) {
-            flipColors(x);
-        }
 
         x.N = size(x.left) + size(x.right) + 1;
         return x;
     }
 
+    public void putSingle(Key key, Value value) {
+        if (root == null) {
+            root = new Node(key, value, 1, BLACK);
+            return;
+        }
+
+        Node f = getNode(key);
+        if (f != null) {
+            f.value = value;
+            return;
+        }
+
+        Node n = root;
+        Node parent = root;
+        while (true) {
+            if (n == null) {
+                n = new Node(key, value, 1, RED);
+                if (parent.key.compareTo(key) > 0) {
+                    parent.left = n;
+                } else {
+                    parent.right = n;
+                }
+                break;
+            }
+
+            parent = n;
+
+            if (isRed(parent.left) && isRed(parent.right)) {
+                flipColors(parent);
+            }
+            if (isRed(parent.right)) {
+                parent = rotateLeft(parent);
+            }
+            if (isRed(parent.left) && isRed(parent.left.left)) {
+                parent = rotateRight(parent);
+            }
+
+            int cmp = parent.key.compareTo(key);
+            if (cmp > 0) {
+                n = parent.left;
+            } else {
+                n = parent.right;
+            }
+
+        }
+
+    }
+
+
     @Override
     public Value get(Key key) {
+        Node n = getNode(key);
+        if (n == null) return null;
+        else return n.value;
+    }
+
+    private Node getNode(Key key) {
+        Node n = root;
+        while (n != null) {
+            int cmp = n.key.compareTo(key);
+            if (cmp == 0) {
+                return n;
+            } else if (cmp > 0) {
+                n = n.left;
+            } else {
+                n = n.right;
+            }
+        }
         return null;
     }
 
@@ -141,5 +208,4 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
             this.color = color;
         }
     }
-
 }

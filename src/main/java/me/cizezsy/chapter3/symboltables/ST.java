@@ -1,11 +1,5 @@
 package me.cizezsy.chapter3.symboltables;
 
-import edu.princeton.cs.algs4.StdIn;
-import edu.princeton.cs.algs4.StdOut;
-
-import java.util.HashMap;
-
-
 public abstract class ST<Key, Value> {
 
 
