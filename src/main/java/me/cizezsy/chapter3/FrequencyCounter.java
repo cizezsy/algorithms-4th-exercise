@@ -3,7 +3,8 @@ package me.cizezsy.chapter3;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import me.cizezsy.chapter3.balancedsearchtree.TopDown234Tree;
+import me.cizezsy.chapter3.balancedsearchtree.AVLTree;
+import me.cizezsy.chapter3.balancedsearchtree.RedBlackBST;
 import me.cizezsy.chapter3.symboltables.ST;
 
 import java.io.FileInputStream;
@@ -19,7 +20,7 @@ public class FrequencyCounter {
             System.setIn(new FileInputStream(args[1]));
 
         int minLen = Integer.parseInt(args[0]);
-        ST<String, Integer> st = new TopDown234Tree<>();
+        ST<String, Integer> st = new RedBlackBST<>();
         while (!StdIn.isEmpty()) {
             String word = StdIn.readString();
             if (word.length() < minLen) continue;
@@ -28,6 +29,7 @@ public class FrequencyCounter {
         }
 
         System.out.println(st.size());
+        System.out.println(((RedBlackBST<String, Integer>) st).isRedBlackBST());
 
         Queue<String> maxQueue = new LinkedList<>();
         String max = "";

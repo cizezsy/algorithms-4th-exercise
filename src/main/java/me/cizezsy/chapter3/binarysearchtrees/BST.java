@@ -285,6 +285,51 @@ public class BST<Key extends Comparable<Key>, Value> extends OrderedST<Key, Valu
         else return node.N;
     }
 
+    private boolean isBinaryTree(Node node) {
+        return isBinaryTree(node, node.N);
+    }
+
+    private boolean isBinaryTree(Node node, int size) {
+        if (node == null) {
+            return size == 0;
+        }
+
+        return size > 0
+                && isBinaryTree(node.left, size - 1 - size(node.right))
+                && isBinaryTree(node.right, size - 1 - size(node.left));
+    }
+
+    private boolean isOrdered(Node node, Key min, Key max) {
+        if (node == null)
+            return true;
+
+        int cmpMax = node.key.compareTo(max);
+        int cmpMin = node.key.compareTo(min);
+
+        return cmpMax <= 0 && cmpMin >= 0 && isOrdered(node.left, min, max) && isOrdered(node.right, min, max);
+
+    }
+
+    private boolean hasDuplicates(Node node) {
+        if (node == null)
+            return true;
+
+        boolean cmp = true;
+        if (node.left != null) {
+            cmp = (node.key.compareTo(node.left.key) != 0);
+        }
+        if (node.right != null) {
+            cmp = cmp && (node.key.compareTo(node.right.key) != 0);
+        }
+
+        cmp = cmp && hasDuplicates(node.left) && hasDuplicates(node.right);
+        return cmp;
+    }
+
+    private boolean isBST(Node node) {
+        return isBinaryTree(node) && isOrdered(node, min(), max()) && hasDuplicates(node);
+    }
+
 
     private class Node {
         private Key key;
