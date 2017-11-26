@@ -19,7 +19,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
 
     private Node put(Node x, Key key, Value value) {
         if (x == null) {
-            x = new Node(key, value, 1, BLACK);
+            x = new Node(key, value, 1, RED);
             return x;
         }
 
@@ -68,6 +68,109 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
     }
 
 
+    @Override
+    public void deleteMin() {
+        if (!isRed(root.left) && !isRed(root.right))
+            root.color = RED;
+        root = deleteMin(root);
+        if (!isEmpty()) root.color = BLACK;
+    }
+
+    private Node deleteMin(Node node) {
+        if (node.left == null) {
+            return null;
+        }
+        if (!isRed(node.left) && !isRed(node.left.left)) {
+            node = moveNodeLeft(node);
+        }
+        node.left = deleteMin(node.left);
+        return balance(node);
+    }
+
+    @Override
+    public void delete(Key key) {
+        if (!isRed(root.left) && !isRed(root.right)) {
+            root.color = RED;
+        }
+        root = delete(root, key);
+        if (!isEmpty()) root.color = BLACK;
+    }
+
+    private Node delete(Node node, Key key) {
+        if (key.compareTo(node.key) < 0) {
+            if (!isRed(node.left) && !isRed(node.left.left))
+                node = moveNodeLeft(node);
+            node.left = delete(node.left, key);
+        } else {
+            if (isRed(node.left))
+                node = rotateRight(node);
+            if (key.compareTo(node.key) == 0 && (node.right == null))
+                return null;
+            if (!isRed(node.right) && !isRed(node.right.left))
+                node = moveNodeRight(node);
+            if (key.compareTo(node.key) == 0) {
+                Node x = min(node.right);
+                node.key = x.key;
+                node.value = x.value;
+                node.right = deleteMin(node.right);
+            } else node.right = delete(node.right, key);
+        }
+        return balance(node);
+    }
+
+    @Override
+    public void deleteMax() {
+        if (!isRed(root.left) && !isRed(root.right))
+            root.color = RED;
+        root = deleteMax(root);
+        if (!isEmpty()) root.color = BLACK;
+    }
+
+    private Node deleteMax(Node node) {
+        if (isRed(node.left)) {
+            rotateRight(node);
+        }
+        if (node.right == null) {
+            return null;
+        }
+        if (!isRed(node.right) && !isRed(node.right.left)) {
+            node = moveNodeRight(node);
+        }
+        node.right = deleteMax(node.right);
+        return node;
+    }
+
+    private Node moveNodeRight(Node node) {
+        flipColors(node);
+        if (isRed(node.left.left)) {
+            node = rotateRight(node);
+        }
+        return node;
+    }
+
+    private Node moveNodeLeft(Node node) {
+        flipColors(node); // make node's color be red
+        if (isRed(node.right.left)) {
+            node.right = rotateRight(node.right);
+            node = rotateLeft(node);
+        }
+        return node;
+    }
+
+    private Node balance(Node node) {
+        if (isRed(node.right)) {
+            node = rotateLeft(node);
+        }
+        if (isRed(node.left) && isRed(node.left.left)) {
+            node = rotateRight(node);
+        }
+        if (isRed(node.left) && isRed(node.right)) {
+            flipColors(node);
+        }
+        node.N = size(node.left) + size(node.right) + 1;
+        return node;
+    }
+
     private Node rotateLeft(Node h) {
         Node x = h.right;
         h.right = x.left;
@@ -91,16 +194,15 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
     }
 
     private void flipColors(Node h) {
-        h.color = RED;
-        h.left.color = BLACK;
-        h.right.color = BLACK;
+        h.color = !h.color;
+        h.left.color = !h.left.color;
+        h.right.color = !h.right.color;
     }
 
 
     private boolean isRed(Node x) {
         return x != null && x.color == RED;
     }
-
 
     @Override
     public Key min() {
@@ -281,6 +383,18 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends OrderedST<K
             N = n;
             this.color = color;
         }
+    }
+
+    public static void main(String[] args) {
+        RedBlackBST<String, Integer> bst = new RedBlackBST<>();
+        bst.put("G", 1);
+        bst.put("C", 1);
+        bst.put("M", 1);
+        bst.put("A", 1);
+        bst.put("D", 1);
+        bst.put("L", 1);
+        bst.put("N", 1);
+        bst.deleteMin();
     }
 
 }
