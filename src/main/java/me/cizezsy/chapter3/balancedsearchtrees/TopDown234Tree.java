@@ -1,4 +1,4 @@
-package me.cizezsy.chapter3.balancedsearchtree;
+package me.cizezsy.chapter3.balancedsearchtrees;
 
 import me.cizezsy.chapter3.binarysearchtrees.OrderedST;
 

@@ -3,8 +3,7 @@ package me.cizezsy.chapter3;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import me.cizezsy.chapter3.balancedsearchtree.AVLTree;
-import me.cizezsy.chapter3.balancedsearchtree.RedBlackBST;
+import me.cizezsy.chapter3.balancedsearchtrees.RedBlackBST;
 import me.cizezsy.chapter3.symboltables.ST;
 
 import java.io.FileInputStream;

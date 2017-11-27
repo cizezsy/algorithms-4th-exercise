@@ -2,7 +2,7 @@ package me.cizezsy.chapter3.symboltables;
 
 import java.util.Iterator;
 
-public class SquentialSearchST<Key, Value> extends ST<Key, Value> {
+public class SequentialSearchST<Key, Value> extends ST<Key, Value> {
 
     private Node first;
     private int size;
