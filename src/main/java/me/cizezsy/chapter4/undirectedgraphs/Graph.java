@@ -1,14 +1,16 @@
-package me.cizezsy.chapter4;
+package me.cizezsy.chapter4.undirectedgraphs;
 
 import edu.princeton.cs.algs4.Bag;
 import edu.princeton.cs.algs4.In;
+
+import java.util.Stack;
 
 public class Graph {
 
     private int V;
     private int E;
 
-    private Bag <Integer>[] adj;
+    private Bag<Integer>[] adj;
 
     public Graph(int V) {
         this.V = V;
@@ -21,13 +23,27 @@ public class Graph {
 
     public Graph(In in) {
         this(in.readInt());
-        this.E = in.readInt();
+        int E = in.readInt();
 
-        while (in.hasNextLine()) {
-            int l = in.readInt();
-            int r = in.readInt();
+        for (int i = 0; i < E; i++) {
+            int v = in.readInt();
+            int w = in.readInt();
+            addEdge(v, w);
+        }
+    }
 
-            addEdge(l, r);
+    public Graph(Graph another) {
+        this(another.V);
+        this.E = another.E;
+
+        for (int i = 0; i < another.V(); i++) {
+            Stack<Integer> stack = new Stack<>();
+            for (int w : another.adj[i]) {
+                stack.push(w);
+            }
+            while (!stack.isEmpty()) {
+                adj[i].add(stack.pop());
+            }
         }
     }
 
@@ -50,14 +66,12 @@ public class Graph {
     }
 
 
-    public static int degree(Graph g, int v) {
-        int degree = 0;
-        for (int ignored : g.adj(v)) {
-            degree++;
+    public boolean hasEdge(int v, int w) {
+        for (int va : adj[v]) {
+            if (va == w) return true;
         }
-        return degree;
+        return false;
     }
-
 
     @Override
     public String toString() {
@@ -70,6 +84,14 @@ public class Graph {
             s.append("\n");
         }
         return s.toString();
+    }
+
+    public static int degree(Graph g, int v) {
+        int degree = 0;
+        for (int ignored : g.adj(v)) {
+            degree++;
+        }
+        return degree;
     }
 
     public static int maxDegree(Graph g) {
