@@ -12,6 +12,7 @@ public class DeepFirstPaths extends Path {
         this.s = s;
         marked = new boolean[g.V()];
         edgeTo = new int[g.V()];
+        dfs(g, s);
     }
 
 
