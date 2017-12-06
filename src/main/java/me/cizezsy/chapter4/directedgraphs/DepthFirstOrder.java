@@ -25,7 +25,7 @@ public class DepthFirstOrder {
         }
     }
 
-    public void dfs(Digraph g, int v) {
+    private void dfs(Digraph g, int v) {
         marked[v] = true;
         pre.add(v);
         for (int w : g.adj(v)) {
